@@ -9,8 +9,16 @@ import ManagerApprovals from "./pages/ManagerApprovals";
 import AdminUsers from "./pages/AdminUsers";
 import AdminRules from "./pages/AdminRules";
 import NotFound from "./pages/NotFound";
+import { useState, useEffect } from 'react';
+// Assuming you have other imports (like './App.css')
 
-const queryClient = new QueryClient();
+// Define the type for the data you expect from the API
+// You'll need to know the column names for your 'currencies' table
+interface Currency {
+  id: number;
+  name: string; // Or whatever your column names are
+  code: string;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -31,5 +39,9 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+
+const queryClient = new QueryClient();
+
 
 export default App;

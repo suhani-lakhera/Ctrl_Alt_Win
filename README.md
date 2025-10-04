@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# Ctrl_Alt_Win: Expense Management System
 
-## Project info
+A full-stack web application to streamline expense reporting, from submission to multi-level approvals, with transparency, flexibility, and automation.
 
-**URL**: https://lovable.dev/projects/1d86144f-65b3-4e84-a19d-32db2634d164
+---
 
-## How can I edit this code?
+## Overview / Motivation
 
-There are several ways of editing your application.
+Manual expense reimbursement is often slow, error-prone, and lacks accountability.  
+This system empowers companies to automate workflows, enforce conditional rules, and give real-time visibility into expenses.
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1d86144f-65b3-4e84-a19d-32db2634d164) and start prompting.
+## Key Features
 
-Changes made via Lovable will be committed automatically to this repo.
+### Role-Based Access Control  
+| Role     | Capabilities |
+|----------|--------------|
+| **Admin**    | Create/manage users, assign roles & manager relationships, define approval workflows, override approvals |
+| **Manager**  | View pending expenses, approve/reject with comments, see amounts in company’s currency |
+| **Employee** | Submit new expense claims, view status/history |
 
-**Use your preferred IDE**
+### Expense Submission  
+- Employees can submit claims with fields like:  
+  - Amount (in any currency)  
+  - Category, Description, Date  
+  - Upload receipt (future OCR support)  
+- System converts foreign currency → company default using exchange API.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Multi-Level Approval Workflows  
+- Define a chain of approvers (e.g. Manager → Finance → Director).  
+- Expense moves to next level only after current approver acts.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Conditional Approval Rules  
+- **Percentage Rule**: e.g. If ≥ 60 % of approvers approve, it’s approved.  
+- **Key Approver Rule**: e.g. If CFO approves, auto-approve instantly.  
+- **Hybrid Rules**: Combine percentage + key approver logic.
 
-Follow these steps:
+### (Planned) OCR for Receipts  
+- Scan receipts → auto-populate amount, date, merchant name, expense lines, etc.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Tech Stack
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **Backend**: Node.js + Express  
+- **Database**: MySQL  
+- **Authentication / Authorization**: JWT + role-based checks  
+- **Frontend**: React.js, Next.js, TypeScript, HTML, CSS
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+## API Integrations
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Country & Currency Data**:  
+  `https://restcountries.com/v3.1/all?fields=name,currencies`  
+- **Currency Conversion Rates**:  
+  `https://api.exchangerate-api.com/v4/latest/{BASE_CURRENCY}`  
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Authentication & Authorization
 
-## What technologies are used for this project?
+- **Login (`POST /login`)**  
+  - Validates email & password.  
+  - Returns JWT with user details, role, and company info.  
+  - Frontend displays different dashboards based on role (Admin / Manager / Employee).  
 
-This project is built with:
+- **Protected Routes**  
+  - Middleware verifies JWT.  
+  - Role checks enforce access control for Admin, Manager, and Employee-specific actions.  
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## Workflow / Use Cases
 
-Simply open [Lovable](https://lovable.dev/projects/1d86144f-65b3-4e84-a19d-32db2634d164) and click on Share -> Publish.
+- **Employee**  
+  - Logs in → fills expense form → submits → sees “Pending” status  
+- **Manager**  
+  - Logs in → sees list of pending expenses → approves or rejects (with comment)  
+- **Admin**  
+  - Sets up user accounts, assigns manager relationships, defines approval workflows, views all company expenses  
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+With **multi-level + conditional** rules in place, the system will route approval accordingly and automatically finalize based on rules.

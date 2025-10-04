@@ -1,0 +1,29 @@
+# Dependencies folder installed by npm
+node_modules/
+
+# Environment file containing secrets (like DB connection strings)
+.env
+
+# Other common ignore files for Node.js
+dist
+build
+npm-debug.log
+
+
+### Why we do this:
+
+* **`node_modules/`:** This folder contains hundreds of thousands of files downloaded by `npm install`. It is huge and unnecessary to track in Git, as anyone can regenerate it by simply running `npm install`.
+* **`.env`:** This file holds your MongoDB password and JWT secret. **You should never commit secrets to Git** (especially not to a public repo). Ignoring it keeps your application secure.
+
+### What's Next?
+
+With the `.env` file secured and your `MONGO_URI` ready (from the previous step), you are now ready to **start the API server and connect to MongoDB!**
+
+1.  Navigate back to your backend project folder (`expense-flow-api`).
+2.  Run the command:
+
+    ```bash
+    node server.js
+    ```
+
+Once you see **`MongoDB connected successfully!`** in your terminal, we can immediately move to testing the **Admin Signup** to generate the first company and user!

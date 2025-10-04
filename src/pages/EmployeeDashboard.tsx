@@ -32,8 +32,17 @@ export default function EmployeeDashboard() {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        // NOTE: Ensure your backend server is running on port 3001
-        const response = await fetch('http://localhost:3001/api/expenses');
+        // NOTE: Ensure your backend server is running on port 8080
+        const API_BASE_URL = 'http://localhost:5000/api'; 
+
+        // Retrieve token from localStorage (adjust key if needed)
+        const token = localStorage.getItem("token");
+
+const response = await fetch(`${API_BASE_URL}/expenses`, { 
+    headers: {
+        Authorization: `Bearer ${token}`,
+    },
+});
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -89,7 +98,7 @@ export default function EmployeeDashboard() {
     return (
       <DashboardLayout userRole={userRole}>
         <div className="text-xl text-red-500 mt-12">Error loading data: {error}</div>
-        <div className="text-muted-foreground">Is the backend server running at http://localhost:3001?</div>
+        <div className="text-muted-foreground">Is the backend server running at http://localhost:5000?</div>
       </DashboardLayout>
     );
   }

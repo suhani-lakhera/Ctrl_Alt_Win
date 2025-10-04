@@ -12,15 +12,27 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const role = formData.get("role") as string || "employee";
+    const name = formData.get("name") as string || "User";
+    
     localStorage.setItem("currentUser", JSON.stringify({ 
-      id: "3", 
-      role: "admin",
-      name: "Admin User" 
+      id: Math.random().toString(36).substr(2, 9), 
+      role,
+      name 
     }));
     toast.success(isSignUp ? "Account created successfully!" : "Welcome back!");
-    navigate("/dashboard/expenses");
+    
+    // Navigate based on role
+    if (role === "employee") {
+      navigate("/dashboard/expenses");
+    } else if (role === "manager") {
+      navigate("/dashboard/approvals");
+    } else {
+      navigate("/dashboard/approvals");
+    }
   };
 
   return (
@@ -73,33 +85,35 @@ export default function Auth() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {isSignUp && (
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" placeholder="John Doe" required />
-              </div>
-            )}
-
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@company.com" required />
+              <Label htmlFor="email">Email Address</Label>
+              <Input id="email" name="email" type="email" placeholder="Enter your email" required />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" placeholder="Enter your password" required />
             </div>
 
             {isSignUp && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input id="confirmPassword" type="password" required />
+                  <Label htmlFor="role">Role</Label>
+                  <Select name="role" defaultValue="employee" required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="employee">Employee</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="currency">Base Currency Country</Label>
-                  <Select required>
+                  <Label htmlFor="currency">Base Currency</Label>
+                  <Select name="currency" defaultValue="USD" required>
                     <SelectTrigger>
                       <SelectValue placeholder="Select currency" />
                     </SelectTrigger>
